@@ -1,0 +1,156 @@
+{% extends "header.html" %}
+{% load widget_tweaks %}
+{% load static %}
+{% block body %}
+
+  <body style="min-height: 100%; background-image:url({% static "images/abs.jpg" %}); bbackground-size: cover; background-repeat: no-repeat; background-attachment: fixed;">
+    {% include "navbar.html" %}
+    {% if Activation == True %}
+
+      <div class="container">
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+          <strong>Activation message has been sent to your email</strong>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </div>
+    {% endif %}
+    {% if not user.is_authenticated %}
+      <div class="container">
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+          <strong>Please login to ask question</strong>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </div>
+    {% endif %}
+  	<div class="container">
+  		{% if user.is_authenticated %}
+        <button class="btn btn-dark" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+          Ask question <i class='fa fa-question'></i>
+          <a href="#B1"></a>
+        </button>
+        <div class="collapse" id="collapseExample"><br>
+          <div class="card card-body" style="width: 800px; height: 100%;">
+      			<form class="mx-5 my-5" method="post" enctype="multipart/form-data">
+      	      {% csrf_token %}
+      				{% for f in form %}
+      					<div class="form-group" style="width: 40rem;">
+      						<b><label for="{{f.id_for_label}}">{{f.label}}</label></b>
+      						{% if f.name == "post_image" %}
+      							{% if f.errors %}
+                      {% render_field f class="form-control-file is-invalid" %}
+      								<div class="invalid-feedback">{{f.errors}}</div>
+      							{% else %}
+      								{{ f|add_class:"form-control-file is-valid" }}
+      							{% endif %}
+      						{% elif f.name == "post_text" %}
+      							{% if f.errors %}
+                      {% render_field f class="form-control is-invalid" style="margin-top: 0px; margin-bottom: 0px; height: 120px;" %}
+      								<div class="invalid-feedback">{{f.errors}}</div>
+      							{% else %}
+                      {% render_field f class="form-control is-valid" style="margin-top: 0px; margin-bottom: 0px; height: 120px;" %}
+      							{% endif %}
+      						{% else %}
+                    {% if f.errors %}
+                      {% render_field f class="form-control is-invalid" %}
+                      <div class="invalid-feedback">{{f.errors}}</div>
+                    {% else %}
+                      {% render_field f class="form-control is-valid" %}
+                    {% endif %}
+                  {% endif %}
+      					</div>
+      				{% endfor %}
+      	      <button id="B1" type="submit" class="btn btn-success">Apply</button>
+      	    </form>
+          </div>
+        </div>
+      {% else %}
+        <a href="{% url "sign_in" %}" class="btn btn-dark" role="button">Ask question <i class='fa fa-question'></i></a>
+      {% endif %}
+    </div>
+
+  		{% for i in postlist %}
+  		<br>
+  			<div class="container">
+  				<div class="card text-center" style="width: 50rem;">
+  					{% if i.post_image %}
+
+  				  	<img class="rounded mx-auto my-4" src="{% get_media_prefix %}{{i.post_image}}" style="max-width: 40rem; max-height: 20rem;" alt="Card image cap" >
+  					{% endif %}
+  				  <div class="card-body">
+
+  				    <h5 class="card-title"><a href="{% url "post1" post_id=i.id %}">{{i.post_title}}</a></h5>
+  				    <p class="card-text">{{i.post_text}}</p>
+  						<nav aria-label="breadcrumb">
+  							<ol class="breadcrumb">
+  								<li class="breadcrumb-item">By: <a href="{% url "current_user_profile" user_id=i.post_related_user.id %}" class="badge badge-primary">{{i.post_related_user}}</a></li>
+                  <li class="breadcrumb-item">
+                    <a href="{% url "current_user_profile" user_id=i.post_related_user.id %}">
+                    {% if i.post_related_user.user_profile.user_image %}
+                      <img class="rounded" src="{% get_media_prefix %}{{i.post_related_user.user_profile.user_image}}" width="28" height="32">
+                    {% else %}
+                      {% if i.post_related_user.user_profile.user_sex == "Female" %}
+                        <img class="rounded" src="{% get_media_prefix %}profile_images/maria.jpg" width="25" height="32">
+                      {% else %}
+                        <img class="rounded" src="{% get_media_prefix %}profile_images/jesus.jpg" width="25" height="32">
+                      {% endif %}
+                    {% endif %}
+
+                    </a></li>
+  								<li class="breadcrumb-item active" aria-current="page"><strong>Last modified:</strong> {{i.post_edition_date|timesince}}</li>
+  								{% if i.comment_set.all.count == 1 %}
+  									<li class="breadcrumb-item active" aria-current="page">{{i.comment_set.all.count}} <a href="{% url "post1" post_id=i.id %}">comment</a></li>
+  								{% elif i.comment_set.all.count == 0 %}
+  									<li class="breadcrumb-item active" aria-current="page">No comments</li>
+
+  								{% else %}
+  									<li class="breadcrumb-item active" aria-current="page">{{i.comment_set.all.count}} <a href="{% url "post1" post_id=i.id %}">comments</a></li>
+  								{% endif %}
+  							</ol>
+                <blockquote class="blockquote">
+                  <footer class="blockquote-footer">Added: {{i.post_publication_date}}</footer>
+                </blockquote>
+  						</nav>
+  				  </div>
+  				</div>
+  			</div><br>
+  		{% endfor %}
+  		</div>
+  	</div>
+  	{% if is_paginated %}
+  		<div class="container">
+  			<ul class="pagination">
+  				{% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page=1">First</a></li>
+  					<li class="page-item"><a class="page-link" href="?page={{page_obj.previous_page_number}}"><<</a></li>
+  				{% else %}
+            <li class="page-item disabled"><a class="page-link" href="#">First</a></li>
+  					<li class="page-item disabled"><a class="page-link" href="#"><<</a></li>
+  				{% endif %}
+  				{% for i in iter %}
+  						{% if page_obj.number == i %}
+  							<li class="page-item active">
+  								<span class="page-link">{{i}}<span class="sr-only">(current)</span></span>
+  							</li>
+  						{% else %}
+  							<li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+  						{% endif %}
+  				{% endfor %}
+  				{% if page_obj.has_next %}
+  					<li class="page-item"><a class="page-link" href="?page={{page_obj.next_page_number}}">>></a></li>
+            <li class="page-item"><a class="page-link" href="?page={{page_obj.paginator.num_pages}}">Last</a></li>
+  				{% else %}
+  					<li class="page-item disabled"><a class="page-link" href="#">>></a></li>
+            <li class="page-item disabled"><a class="page-link" href="#">Last</a></li>
+  				{% endif %}
+        </ul>
+      </div>
+  	{% endif %}
+
+    {% include "footer.html" %}
+  </body>
+
+{% endblock %}

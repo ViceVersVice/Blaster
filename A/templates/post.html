@@ -1,0 +1,169 @@
+{% extends "header.html" %}
+{% load widget_tweaks %}
+{% load static %}
+{% block body %}
+
+  <body class="body" style="background-image:url({% static "images/abs.jpg" %}); background-size: cover; background-repeat: no-repeat; position: relative;">
+  {% include "navbar.html" %}
+    <div class="container">
+      <div class="row justify-content-center">
+        {% if object.post_image %}
+          <img class="rounded mx-5 my-4" style="max-width: 40rem; max-height: 22rem;" src="{% get_media_prefix %}{{object.post_image}}" alt="Card image cap">
+        {% endif %}
+        <div class="card" style="width: 60rem;">
+          <div class="card-header">
+            <h3><b>{{object.post_title}}</b></h3>
+          </div>
+
+          <div class="card-body">
+            <p class="card-text">{{object.post_text}}</p>
+
+          </div>
+
+          <div class="card-footer text-muted">
+            {% if user == object.post_related_user %}
+              <a href="{% url "edit_post" num=object.id %}" class="btn btn-info btn-sm" role="button">Edit</a>
+              <a href="{% url "del_post" num=object.id %}" class="btn btn-info btn-sm" role="button">Delete</a>
+            {% else %}
+              <a href="{% url "edit_post" num=object.id %}" class="btn btn-info btn-sm disabled" role="button" aria-disabled="true">Edit</a>
+              <a href="{% url "del_post" num=object.id %}" class="btn btn-info btn-sm disabled" role="button" aria-disabled="true">Delete</a>
+            {% endif %}
+            By: <a href="{% url "current_user_profile" user_id=object.post_related_user.id %}">{{object.post_related_user}}</a> / At: {{object.post_date}}
+          </div>
+        </div>
+      </div>
+
+    </div><br>
+    <div class="container">
+      {% if post_comments %}
+        <h2>Answers:</h2>
+        <ul class="list-group list-group-flush">
+          {% for i in post_comments %}
+            <li class="list-group-item">
+              <div class="container">
+                <div class="row">
+                  <div class="col-1">
+                    <a href="{% url "current_user_profile" user_id=i.comment_related_user.id %}"><b>{{i.comment_related_user}}</b></a>
+                  </div>
+                  <div class="col-11">
+                    <small><strong>Posted:</strong> {{i.comment_date}}</small>
+                    <small><strong>Last modified:</strong> {{i.comment_edition_date|timesince}}</small>
+
+
+                  </div>
+                </div><br>
+                <div class="row">
+                  <div class="col-1">
+                    <a href="{% url "current_user_profile" user_id=i.comment_related_user.id %}">
+                      {% if i.comment_related_user.user_profile.user_image %}
+                        <img src="{% get_media_prefix %}{{i.comment_related_user.user_profile.user_image}}" class="rounded" width="80" height="60" alt="Cinque Terre">
+                      {% else %}
+                        {% if i.comment_related_user.user_profile.user_sex == "Female" %}
+                          <img src="{% get_media_prefix %}profile_images/maria.jpg" class="rounded" width="80" height="60" alt="Cinque Terre">
+                        {% else %}
+                          <img src="{% get_media_prefix %}profile_images/jesus.jpg" class="rounded" width="80" height="60" alt="Cinque Terre">
+                        {% endif %}
+                      {% endif %}
+                    </a>
+                  </div>
+                  <div class="col-11">
+                    <p>{{i}}</p>
+                  </div>
+                </div><br>
+                <div class="container">
+                  <div class="row justify-content-center">
+                    {% if i.comment_image %}
+                      <img src="{% get_media_prefix %}{{i.comment_image}}" width="100" height="70" alt="Card image cap">
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </li>
+          {% endfor %}
+      {% else %}
+        <h2>No answers</h2>
+      {% endif %}
+    </div><br>
+    <div class="container">
+      <div class="container">
+        {% if user.is_authenticated %}
+          <button class="btn btn-dark" type="button" data-toggle="collapse" data-target="#answer" aria-expanded="false" aria-controls="answer">
+            <a href="#b1"></a>
+            Answer
+          </button>
+          <div class="collapse" id="answer"><br>
+            <div class="card card-body" style="width: 700px; height: 100%;">
+              <form class="mx-3 my-3" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% for f in form %}
+                  <div class="form-group row" style="width: 100%;">
+                    <b><label for="{{f.id_for_label}}">{{f.label}}</label></b>
+                    {% if f.name == "comment_image" %}
+        							{% if f.errors %}
+        								{{ f|add_class:"form-control-file is-invalid" }}
+        								<div class="invalid-feedback">{{f.errors}}</div>
+        							{% else %}
+        								{{ f|add_class:"form-control-file is-valid" }}
+        							{% endif %}
+        						{% else %}
+        							{% if f.errors %}
+        								{{ f|add_class:'form-control is-invalid' }}
+        								<div class="invalid-feedback">{{f.errors}}</div>
+        							{% else %}
+        								{{ f|add_class:'form-control is-valid' }}
+        							{% endif %}
+        						{% endif %}
+                  </div>
+                {% endfor %}
+                <div class="row">
+                  <button class="btn btn-success" onclick="this.disabled=true,this.form.submit()">Answer</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        {% else %}
+          <div class="row">
+            <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="Login to answer">
+              <button class="btn btn-dark" style="pointer-events: none;" type="button" disabled>Answer</button>
+            </span>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div><br>
+  {% if is_paginated %}
+		<div class="container">
+			<ul class="pagination">
+				{% if page_obj.has_previous %}
+          <li class="page-item" id="b1"><a class="page-link" href="?page=1">First</a></li>
+					<li class="page-item"><a class="page-link" href="?page={{page_obj.previous_page_number}}"><<</a></li>
+				{% else %}
+          <li class="page-item disabled" id="b1"><a class="page-link" href="#">First</a></li>
+					<li class="page-item disabled"><a class="page-link" href="#"><<</a></li>
+				{% endif %}
+				{% for i in iter %}
+						{% if page_obj.number == i %}
+							<li class="page-item active">
+								<span class="page-link">{{i}}<span class="sr-only">(current)</span></span>
+							</li>
+						{% else %}
+							<li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+						{% endif %}
+				{% endfor%}
+				{% if page_obj.has_next %}
+					<li class="page-item"><a class="page-link" href="?page={{page_obj.next_page_number}}">>></a></li>
+          <li class="page-item"><a class="page-link" href="?page={{page_obj.paginator.num_pages}}">Last</a></li>
+				{% else %}
+					<li class="page-item disabled"><a class="page-link" href="#">>></a></li>
+          <li class="page-item disabled"><a class="page-link" href="#">Last</a></li>
+
+				{% endif %}
+      </ul>
+    </div>
+	{% endif %}
+  </body>
+  {% include "footer.html" %}
+
+
+
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "header.html" %}
+{% load widget_tweaks %}
+{% load static %}
+{% block body %}
+  <body class="body" style="background-image:url({% static "images/abs.webp" %}); background-size: cover; background-repeat: no-repeat; position: relative;">
+    {% include "navbar.html" %}
+    <div class="container">
+      <div class="jumbotron mx-auto" style="width: 550px; height: 700px;">
+        <div class="container">
+          {% if object.user_profile.user_image %}
+            <img class="rounded mx-auto d-block" src="{% get_media_prefix %}{{object.user_profile.user_image}}" width="300" height="250">
+          {% else %}
+            {% if object.user_profile.user_sex == "Female" %}
+              <img class="rounded mx-auto d-block" src="{% get_media_prefix %}profile_images/maria.jpg" width="300" height="250">
+            {% else %}
+              <img class="rounded mx-auto d-block" src="{% get_media_prefix %}profile_images/jesus.jpg" width="300" height="250">
+            {% endif %}
+          {% endif %}
+          </div><br>
+          <div class="row">
+            <div class="card mx-auto" style="width:400px">
+              <div class="card-body">
+                <h4 class="card-title">{{object.user_profile}}</h4>
+                <p class="card-text">Registered: {{object.user_profile.user_register_date}}</p>
+                {% if object.user_profile.user_sex != "ND" %}
+                  <p class="card-text">{{object.user_profile.user_sex}}</p>
+                {% endif %}
+                <p class="card-text">{{object.user_profile.birth_date}}</p>
+
+                <h5 class="card-title">Description</h5>
+                {% if object.user_profile.user_description %}
+                  <p class="card-text">{{object.user_profile.user_description}}</p>
+                {% else %}
+                  <p class="card-text">Seems GUCCI</p>
+                {% endif %}
+                {% if user == object %}
+                  <a href="{% url "edit_current_user_profile" user_id=object.id %}" class="btn btn-primary">Edit</a>
+                  <a href="{% url "password_change" %}" class="btn btn-primary">Change password</a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+{% endblock %}

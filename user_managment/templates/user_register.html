@@ -1,0 +1,76 @@
+{% extends "header.html" %}
+{% load widget_tweaks %}
+{% load static %}
+{% block body %}
+
+  <body class="body" style="background-image:url({% static "images/abs.webp" %}); background-size: cover; background-repeat: no-repeat; position: relative;">
+    <div class="container">
+      <div class="jumbotron mx-auto mt-5" style="width: 500px; height: 100%; background-image:url({% static "images/im1.jpg" %}); background-size: 100% 100%;">
+        <div class="card mb-3">
+          <div class="card-body mx-auto">
+            <strong>Registration</strong>
+          </div>
+        </div>
+        <form method="post">
+          {% csrf_token %}
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <b>{{ form.username.label_tag }}</b>
+
+              {% if form.username.errors %}
+                {% render_field form.username class="form-control is-invalid" %}
+                <div class="alert alert-danger mt-1" role="alert">
+                  {{form.username.errors}}
+                </div>
+              {% else %}
+                {% render_field form.username class="form-control is-valid" %}
+              {% endif %}
+            </div>
+            <div class="form-group col-md-6">
+              <b>{{ form.email.label_tag }}</b>
+              {% if form.email.errors %}
+                {% render_field form.email class="form-control is-invalid" %}
+                <div class="alert alert-danger mt-1" role="alert">
+                  {{form.email.errors}}
+                </div>
+              {% else %}
+                {% render_field form.email class="form-control is-valid" %}
+              {% endif %}
+            </div>
+          </div>
+          <div class="form-group">
+            <b>{{ form.password1.label_tag }}</b>
+            {% if form.password1.errors %}
+              {% render_field form.password1 class="form-control is-invalid" %}
+              <div class="alert alert-danger mt-1" role="alert">
+                {{form.password1.errors}}
+              </div>
+            {% else %}
+              {% render_field form.password1 class="form-control is-valid" %}
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <b>{{ form.password2.label_tag }}</b>
+            {% if form.password2.errors %}
+              {% render_field form.password2 class="form-control is-invalid" %}
+              <div class="alert alert-danger mt-1" role="alert">
+                {{form.password2.errors}}
+              </div>
+            {% else %}
+              {% render_field form.password2 class="form-control is-valid" %}
+            {% endif %}
+          </div>
+          {% if form.errors %}
+            {% for err in form.non_field_errors %}
+              <div class="alert alert-danger" role="alert">
+                {{err}}
+              </div>
+            {% endfor %}
+          {% endif %}
+          <button class="btn btn-dark btn-sm" onclick="this.disabled=true,this.form.submit()">Sign up</button>
+          <a class="btn btn-dark btn-sm" href="{% url "homeT" %}" role="button">Back</a>
+        </form>
+      </div>
+    </div>
+  </body>
+{% endblock %}

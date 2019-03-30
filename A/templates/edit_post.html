@@ -1,0 +1,36 @@
+{% extends "header.html" %}
+{% load widget_tweaks %}
+{% load static %}
+{% block body %}
+  <body class="body" style="background-image:url({% static "images/abs.jpg" %}); background-size: cover; background-repeat: no-repeat; position: relative;">
+  {% include "navbar.html" %}
+  <div class="container">
+    <div class="jumbotron mx-auto mt-2" style="width: 600px; height: 100%;">
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for f in form %}
+          <div class="form-group">
+            <b><label for="{{f.id_for_label}}">{{f.label}}</label></b>
+            {% if f.name == "post_image" %}
+              {% if f.errors %}
+                {{ f|add_class:"form-control-file is-invalid" }}
+                <div class="invalid-feedback">{{f.errors}}</div>
+              {% else %}
+                {{ f|add_class:"form-control-file is-valid" }}
+              {% endif %}
+            {% else %}
+              {% if f.errors %}
+                {{ f|add_class:'form-control is-invalid' }}
+                <div class="invalid-feedback">{{f.errors}}</div>
+              {% else %}
+                {{ f|add_class:'form-control is-valid' }}
+              {% endif %}
+            {% endif %}
+          </div>
+        {% endfor %}
+
+      <button class="btn btn-dark btn-sm" onclick="this.disabled=true,this.form.submit()">Apply changes</button>
+      </form>
+  </div>
+
+{% endblock %}

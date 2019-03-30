@@ -1,0 +1,10 @@
+media/
+static/
+static_root/
+PG_11_201809051/
+tool/*/
+
+migrations/
+__pycache__/
+*.pyc
+*.txt

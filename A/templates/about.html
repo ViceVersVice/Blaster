@@ -1,0 +1,91 @@
+{% extends "header.html" %}
+{% load widget_tweaks %}
+{% load static %}
+{% block body %}
+  <body style="min-height: 100%; background-image:url({% static "images/abs.jpg" %}); bbackground-size: cover; background-repeat: no-repeat; background-attachment: fixed;">
+    {% include "navbar.html" %}
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="card text-center">
+          <div class="card-header">
+            <h3>BLASTER</h3>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Makes your BLASTing easier!</h5>
+            <p class="card-text">Blaster is a tool for local BLAST results visualization.
+              Here you are able to compare many VS many nucleotide sequences and store result in EXCEL spreadsheet.
+              All is what you need is to provide query sequence fasta/multifasta file and database sequences in archive or multifasta.
+              You can choose algorithm (blastn, megablast) and sort out hits by size, coverage or identity.</p>
+            <a href="{% url "blaster" %}" class="btn btn-primary">Try it!</a>
+          </div>
+        </div>
+      </div>
+  	  <div class="row my-3">
+    		<div class="col">
+    			<a class="btn btn-dark" href="#" role="button" data-toggle="modal" data-target="#exampleModal1"><img src="{% static "images/example1.png" %}"  style="width: 600px; height: 305px;" alt="image"></a>
+    		</div>
+        <div class="col">
+          <div class="card">
+            <div class="card-body">
+              Compare many vs many/one vs many/one vs one nucleotide sequences
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row my-3">
+    		<div class="col">
+    			<a class="btn btn-dark" href="#" role="button" data-toggle="modal" data-target="#exampleModal2"><img src="{% static "images/example2.png" %}" style="width: 600px; height: 306px;" alt="image"></a>
+    		</div>
+        <div class="col">
+          <div class="card">
+            <div class="card-body">
+              Show only hits sorted by coverage, identity and length
+            </div>
+          </div>
+        </div>
+  	  </div>
+    </div>
+
+    <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+      <div class="modal-dialog" role="document" style="min-width: 70%; margin: 5rem;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel1">Compare many vs many/one vs many/one vs one nucleotide sequences</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="container">
+              <img src="{% static "images/example1.png" %}" class="img-fluid" alt="image">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document" style="min-width: 70%; margin: 5rem;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel2">Show only hits sorted by coverage, identity and length</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="container">
+              <img src="{% static "images/example2.png" %}" class="img-fluid" alt="image">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+    {% include "footer.html" %}
+  </body>
+
+{% endblock %}

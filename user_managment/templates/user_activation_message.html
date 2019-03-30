@@ -1,0 +1,19 @@
+{% autoescape off %}
+<!doctype html>
+<html lang="en">
+
+  <head>
+  	<title>Activation</title>
+  	<meta charset="utf-8" />
+  	{% load static %}
+  </head>
+
+  <body>
+    <h3>Hello {{user.username}}!</h3>
+    <p>Please confirm your email by link:</p>
+    <p><a href="http://134.209.232.173:80{{link}}">Here</a></p>
+    <h3>Thanks!</h3>
+  </body>
+  
+</html>
+{% endautoescape %}

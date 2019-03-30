@@ -1,0 +1,184 @@
+{% extends "header.html" %}
+{% load widget_tweaks %}
+{% load static %}
+{% block body %}
+  <body style="min-height: 100%; background-image:url({% static "images/abs.jpg" %}); bbackground-size: cover; background-repeat: no-repeat; background-attachment: fixed;">
+    {% include "navbar.html" %}
+    <div class="container">
+      <div class="row mb-4 justify-content-around">
+        <div class="col-md-3 align-self-center mr-1 rounded>">
+          <div class="card mb-1">
+            <div class="card-body">
+              <p><b>1.</b> Provide your query sequence in fasta or multifasta format</p>
+            </div>
+          </div>
+          <div class="card mb-1">
+            <div class="card-body">
+              <p><b>2.</b> Provide your subject sequences in fasta/multifasta format.
+                Sequences can be in separate fasta/multifasta files in one archive (.zip, .tar, .gz).</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <p><b>3.</b> Adjust hits sorting and cut off parameteres. Horizontal sorting by total hits score, identity etc. is only available for subject sequences provided in separate files.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8 rounded" style="background-color: #eff6fa;">
+          <form method="post" enctype="multipart/form-data" >
+            {% csrf_token %}
+              <div class="form row mt-3 ml-2 mr-2">
+                <div class="form-group col-md-4">
+                    <b>{{ form.task.label_tag }}</b>
+                      {% if form.task.errors %}
+                        {% render_field form.task class="form-control form-control-sm is-invalid" %}
+                        <div class="alert alert-danger mt-1" role="alert">
+                          {{form.task.errors}}
+                        </div>
+                      {% else %}
+                        {% render_field form.task class="form-control form-control-sm is-valid" %}
+                      {% endif %}
+                </div>
+                <div class="form-group col-md-4">
+                    <b>{{ form.sort_by.label_tag }}</b>
+                      {% if form.sort_by.errors %}
+                        {% render_field form.sort_by class="form-control form-control-sm is-invalid" %}
+                        <div class="alert alert-danger mt-1" role="alert">
+                          {{form.sort_by.errors}}
+                        </div>
+                      {% else %}
+                        {% render_field form.sort_by class="form-control form-control-sm is-valid" %}
+                      {% endif %}
+                </div>
+                <div class="form-group col-md-4">
+                    <b>{{ form.sort_horizontal.label_tag }}</b>
+                      {% if form.sort_horizontal.errors %}
+                        {% render_field form.sort_horizontal class="form-control form-control-sm is-invalid" %}
+                        <div class="alert alert-danger mt-1" role="alert">
+                          {{form.sort_horizontal.errors}}
+                        </div>
+                      {% else %}
+                        {% render_field form.sort_horizontal class="form-control form-control-sm is-valid" %}
+                      {% endif %}
+                </div>
+              </div>
+              <div class="form row ml-2 mr-2">
+                <div class="form-group col-md-6">
+                    <b>{{ form.min_leng.label }}</b>
+                      {% if form.min_leng.errors %}
+                        {% render_field form.min_leng class="form-control form-control-sm is-invalid" placeholder="------" %}
+                        <div class="alert alert-danger mt-1" style="height:30px; line-height:20px; padding:5px;" role="alert">
+                          <small>{{form.min_leng.errors}}</small>
+                        </div>
+                      {% else %}
+                        {% render_field form.min_leng class="form-control form-control-sm is-valid" placeholder="------" %}
+                      {% endif %}
+                </div>
+                <div class="form-group col-md-6">
+                    <b>{{ form.max_leng.label }}</b>
+                      {% if form.max_leng.errors %}
+                        {% render_field form.max_leng class="form-control form-control-sm is-invalid" placeholder="------" %}
+                        <div class="alert alert-danger mt-1" style="height:30px; line-height:20px; padding:5px;" role="alert">
+                          <small>{{form.max_leng.errors}}</small>
+                        </div>
+                      {% else %}
+                        {% render_field form.max_leng class="form-control form-control-sm is-valid" placeholder="------" %}
+                      {% endif %}
+                </div>
+              </div>
+              <div class="form row ml-2 mr-2">
+                <div class="form-group col-md-6">
+                    <b>{{ form.min_coverage.label }}</b>
+                      {% if form.min_coverage.errors %}
+                        {% render_field form.min_coverage class="form-control form-control-sm is-invalid" placeholder="Max. 100%" %}
+                        <div class="alert alert-danger mt-1" style="height:30px; line-height:20px; padding:5px;" role="alert">
+                          <small>{{form.min_coverage.errors}}</small>
+                        </div>
+                      {% else %}
+                        {% render_field form.min_coverage class="form-control form-control-sm is-valid" placeholder="Max. 100%" %}
+                      {% endif %}
+                </div>
+                <div class="form-group col-md-6">
+                    <b>{{ form.min_identity.label }}</b>
+                      {% if form.min_identity.errors %}
+                        {% render_field form.min_identity class="form-control form-control-sm is-invalid" placeholder="Max. 100%" %}
+                        <div class="alert alert-danger mt-1" style="height:30px; line-height:20px; padding:5px;" role="alert">
+                          <small>{{form.min_identity.errors}}</small>
+                        </div>
+                      {% else %}
+                        {% render_field form.min_identity class="form-control form-control-sm is-valid" placeholder="Max. 100%" %}
+                      {% endif %}
+                </div>
+              </div>
+
+              <div class="form row ml-2 mr-2">
+                <div class="form-group col">
+                    <b>{{ form.query_input.label_tag }}</b>
+                    <div class="custom-file">
+                      {% render_field form.query_input class="custom-file-input" id="query" %}
+                      <label class="custom-file-label" for="query">.fasta/.ffn/.fna</label>
+                    </div>
+                    {% if form.query_input.errors %}
+                      <div class="alert alert-danger mt-1" style="height:30px; line-height:20px; padding:5px;" role="alert">
+                        <small>{{form.query_input.errors}}</small>
+                      </div>
+                    {% endif %}
+                </div>
+              </div>
+              <div class="form row ml-2 mr-2">
+                <div class="form-group col">
+                    <b>{{ form.sequences_input.label_tag }}</b>
+                    <div class="custom-file">
+                      {% render_field form.sequences_input class="custom-file-input" id="sequences" %}
+                      <label class="custom-file-label" for="sequences">.fasta/.ffn/.fna/multifasta/.zip/.tar/.gz</label>
+                    </div>
+                    {% if form.sequences_input.errors %}
+                      <div class="alert alert-danger mt-1" style="height:30px; line-height:20px; padding:5px;" role="alert">
+                        <small>{{form.sequences_input.errors}}</small>
+                      </div>
+                    {% endif %}
+                </div>
+                <script>
+                  $('#query').on('change',function(){
+                      //get the file name
+                      var fileName = $(this).val();
+                      //replace the "Choose a file" label
+                      $(this).next('.custom-file-label').html(fileName);
+                  })
+                </script>
+                <script>
+                  $('#sequences').on('change',function(){
+                      //get the file name
+                      var fileName = $(this).val();
+                      //replace the "Choose a file" label
+                      $(this).next('.custom-file-label').html(fileName);
+                  })
+                </script>
+              </div>
+              {% if form.errors %}
+                {% for err in form.non_field_errors %}
+                  <div class="alert alert-danger" role="alert">
+                    {{err}}
+                  </div>
+                {% endfor %}
+              {% endif %}
+              <button type="submit" class="btn btn-primary mb-3 ml-4" onclick="this.disabled=true,this.form.submit()">Submit</button>
+              <div class="form-row">
+                <div class="col">
+
+                </div>
+              </div>
+          </form>
+          {% if id_num %}
+            <div class="row  mb-3 ml-4 mr-4">
+              <a class="btn btn-success btn-block" href="{% url "download_file" output_id=id_num %}" role="button">Your file</a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% include "footer.html" %}
+  </body>
+
+
+{% endblock %}
