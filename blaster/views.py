@@ -3,6 +3,7 @@ from django.views.generic import CreateView
 from .forms import blaster_form
 from .models import blaster# Create your views here.
 import uuid
+import os
 from django.urls import reverse, reverse_lazy
 from .tool.make_excel_for_cds_for_public import blaster_tool
 from .tool.remove_cache import remove_cache
@@ -12,13 +13,16 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.http import FileResponse
 import io
 
-# removes blaster tool database records and delete users uploaded files and folders
-# def clear_blaster_tool_cache_and_database():
-#     remove_cache()
-#     for i in blaster.objects.all():
-#         print(i)
-#         i.delete()
 
+BLASTER_OUTPUT_PATH = os.path.join(settings.BASE_DIR, "blaster\\tool")
+#print(BLASTER_OUTPUT_PATH)
+# removes blaster tool database records and delete users uploaded files and folders
+def clear_blaster_tool_cache_and_database(root):
+    remove_cache(root)
+    for i in blaster.objects.all():
+        print(i)
+        i.delete()
+clear_blaster_tool_cache_and_database(BLASTER_OUTPUT_PATH)
 
 
 class Blaster(CreateView):
