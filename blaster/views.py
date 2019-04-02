@@ -16,20 +16,49 @@ import io
 
 BLASTER_OUTPUT_PATH = os.path.join(settings.BASE_DIR, "blaster\\tool")
 #print(BLASTER_OUTPUT_PATH)
-# removes blaster tool database records and delete users uploaded files and folders
+#
+# files and folders
 def clear_blaster_tool_cache_and_database(root):
+    """Removes blaster_tool database records and delete users uploaded data
+
+    Args:
+        root: path to folder with user input subfolders"""
+
     remove_cache(root)
     for i in blaster.objects.all():
         print(i)
         i.delete()
-clear_blaster_tool_cache_and_database(BLASTER_OUTPUT_PATH)
+
+#clear_blaster_tool_cache_and_database(BLASTER_OUTPUT_PATH)
 
 
 class Blaster(CreateView):
+    """Represents user nucleotide sequences input and .xlsx result output
+
+    This CBV represents user input and analysis parameters form, creates
+    database record (see CreateView), validates these parameters, instantiates Blaster script class
+    and calls it`s methods and provides link to file output.
+
+    Overwritten attributes
+    ----------
+    form_class: object
+        form class object
+    template_name: str
+        html template name
+    """
+
     form_class = blaster_form
     template_name = "blaster.html"
     #queryset = blaster.objects.all()
     def get_context_data(self, **kwargs):
+        """After submitting form provides output file link based on unique id
+
+        kwargs:
+            output_id: uuid of accepted by user form
+        Returns:
+            Context to html template. Also returns link to output file if provided output_id
+        """
+
         context = super().get_context_data(**kwargs)
         try:
             context["id_num"] = self.kwargs["output_id"]
@@ -38,14 +67,24 @@ class Blaster(CreateView):
         return context
 
     def form_valid(self, form):
+        """After successful form validation creates database record, creates
+        instance of blaster_tool class and calls it`s methods
+
+        args:
+            form: validated form
+        Returns:
+            Redirect to Blaster view with output file uuid (output_id)
+        """
+
         self.object = form.save()
+        id_num_corrected = str(self.object.id_num).replace("-", "") #replaces unnecessary "-" in uuid
+        output_id = id_num_corrected # output file id
+        id_path = "{0}\\{1}".format(settings.TEST_ROOT, id_num_corrected) # path to user input files folder
 
-        id_num_corrected = str(self.object.id_num).replace("-", "")
-        id_path = "{0}\\{1}".format(settings.TEST_ROOT, id_num_corrected)
-        query_name = self.request.FILES["query_input"]
-        sort_by = form.cleaned_data["sort_by"]
-        sort_horizontal = form.cleaned_data["sort_horizontal"]
-
+        query_name = self.request.FILES["query_input"] # user quey file name
+        sort_by = form.cleaned_data["sort_by"] # sorting parameter
+        sort_horizontal = form.cleaned_data["sort_horizontal"] # sorting parameter
+        # creates necessary initial parameters if they were not provided
         if form.cleaned_data["min_leng"] != None:
             min_leng = form.cleaned_data["min_leng"]
         else:
@@ -62,20 +101,19 @@ class Blaster(CreateView):
             min_identity = form.cleaned_data["min_identity"]
         else:
             min_identity=0
-        #print(form.cleaned_data)
-
+        # creates instance of blaster_tool class with user input data and path to sequence files
         run_blaster = blaster_tool(id_num=id_path, query_name=query_name, task=self.object.task,
                                    sort_by=sort_by, sort_horizontal=sort_horizontal,
                                    min_leng=min_leng, max_leng=max_leng,
                                    min_coverage=min_coverage, min_identity=min_identity)
-        run_blaster.create_id_folder()
-        run_blaster.unpack_sequences()
-        run_blaster.db_blast()
-        run_blaster.make_excel()
-        output_id = id_num_corrected
-        return redirect("blaster", output_id)
+        run_blaster.create_id_folder() # creates subfolders
+        run_blaster.unpack_sequences() # unpack archivised files
+        run_blaster.db_blast() # creates local BLAST sequence database and makes main analysis
+        run_blaster.make_excel() # creates .xlsx file wit output data
+        return redirect("blaster", output_id) # refreshes page after analysis end
 
 
 def download_file(request, output_id):
+    """Provides .xlsx output with processed user data"""
     return FileResponse(open("{0}\\{1}\\output.xlsx".format(settings.TEST_ROOT, output_id), "rb"), as_attachment=True, filename="out.xlsx")
 #

@@ -3,10 +3,16 @@ import shutil
 import re
 
 def remove_cache(route):
+    """Removes subfolders with user input files
+
+    Args
+        route: str
+            path for user folder with user input subfolders
+    """
+
     allowed_extensions = [".py", ".pyc", ".gitignore"]
     allowed_directories = ["__pycache__"]
-    #check for safety
-    if re.search(r"tool$", route) != None:
+    if re.search(r"tool$", route) != None: #check path for safety
         for root, dirs, files in os.walk(route):
             for directory in dirs:
                if directory not in allowed_directories:

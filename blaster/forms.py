@@ -7,18 +7,31 @@ import os
 
 
 class blaster_form(forms.ModelForm):
+    """ModelForm for user sequences and analysis parameters input
+
+    Attributes:
+        min_leng, max_leng, min_coverage, min_identity: FormFields for analysis parameters
+    """
+
     min_leng = forms.FloatField(min_value=0, max_value=99999999999999999, label="Minimum hit length:", required=False)
     max_leng = forms.FloatField(min_value=0, max_value=99999999999999999, label="Maximum hit length:", required=False)
     min_coverage = forms.FloatField(min_value=0, max_value=100, label="Minimum hit coverage % value:", required=False)
     min_identity = forms.FloatField(min_value=0, max_value=100, label="Minimum hit identity % value:", required=False)
     class Meta:
-        model = blaster
-        fields = ["task", "sort_by", "sort_horizontal", "query_input", "sequences_input",]
+        model = blaster # model object
+        fields = ["task", "sort_by", "sort_horizontal", "query_input", "sequences_input",] # list of model fields objects
         labels = {
         "task": "Task:", "sort_by": "Sort hits by:", "sort_horizontal": "Sort horizontally:",
-        }
+        } # custom form fields labels
 
     def clean_sequences_input(self):
+        """blaster_form clean method, validates user subject file input extension and mimetype
+
+        Raise:
+            ValidationError: if user subject file input is not appropriate
+        Returns:
+            cleaned user input files"""
+
         allowed_mimes = ["text/plain", "application/zip",
                          "application/x-tar", "application/x-gzip"]
         allowed_extensions = [".zip", ".tar", ".gz", ".fasta", ".ffn", ".fna"]
@@ -34,6 +47,12 @@ class blaster_form(forms.ModelForm):
 
 
     def clean_query_input(self):
+        """blaster_form clean method, validates user query file input extension and mimetype
+
+        Raise:
+            ValidationError: if user query file input is not appropriate
+        Returns:
+            cleaned user input files"""
         allowed_mimes = ["text/plain",]
         allowed_extensions = [".fasta", ".ffn", ".fna"]
         query_file = self.cleaned_data["query_input"]

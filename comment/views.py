@@ -16,14 +16,45 @@ from django.http import HttpResponseForbidden
 # Create your views here.
 
 class EditComment(UserPassesTestMixin, UpdateView):
+    """View for post`s comments editing. Define user permissions for comment editing.
+
+    Attributes:
+        queryset: comment model queryset
+        pk_url_kwarg: keyword argument (comment object id) provided with url
+    """
+
     queryset = comment.objects.all()
     pk_url_kwarg = "comment_id"
+
     def get_success_url(self):
-        post_id = self.kwargs["post_id"]
+        """Define success url to current post
+
+        Returns:
+            url to current post
+        """
+
+        post_id = self.kwargs["post_id"] # current post id
         return reverse_lazy("post1", kwargs={'post_id': post_id})
+
     def handle_no_permission(self):
+        """
+        Returns:
+            HttpResponseForbidden for unauthorized requests (not passed test_func)
+        """
+
         return HttpResponseForbidden()
+
     def test_func(self):
+        """Test function for current user
+
+        Attributes:
+            current_user: User class object (__str__) of active user_register
+            comment_user: User class object (__str__) of related with it comment
+        Returns:
+            True - current user is the same user which created comment
+            False - vice versa
+        """
+
         current_user = self.request.user
         comment_user = self.get_object().comment_related_user
         if current_user == comment_user:
@@ -32,14 +63,42 @@ class EditComment(UserPassesTestMixin, UpdateView):
             return False
 
 class DeleteComment(UserPassesTestMixin, DeleteView):
+    """View for post`s comments deleting. Define user permissions for comment deleting.
+
+    Attributes:
+        queryset: comment model queryset
+        pk_url_kwarg: keyword argument (comment object id) provided with url
+    """
+
     queryset = comment.objects.all()
     pk_url_kwarg = "comment_id"
+
     def get_success_url(self):
+        """Define success url to current post
+        Returns:
+            url to current post
+        """
+
         post_id = self.kwargs["post_id"]
         return reverse_lazy("post1", kwargs={'post_id': post_id})
+
     def handle_no_permission(self):
+        """
+        Returns:
+            HttpResponseForbidden for unauthorized requests (not passed test_func)
+        """
         return HttpResponseForbidden()
+
     def test_func(self):
+        """Test function for current user
+
+        Attributes:
+            current_user: User class object (__str__) of active user_register
+            comment_user: User class object (__str__) of related with it comment
+        Returns:
+            True - current user is the same user which created comment
+            False - vice versa
+        """
         current_user = self.request.user
         comment_user = self.get_object().comment_related_user
         if current_user == comment_user:

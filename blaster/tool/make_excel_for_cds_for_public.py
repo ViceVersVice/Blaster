@@ -13,10 +13,26 @@ from Bio import Entrez
 import magic
 
 class blaster_tool():
+    """Class for main sequence similarity analysis. Defines methods for
+    processing user sequences files with algorithm in standalone package (NCBI BLAST+).
+
+    Attributes:
+        id_num: str
+            path for unique folder with sequences query_input
+        query_name: name of query sequence file
+        min_coverage, min_identity, max_leng, min_leng, task: int/float
+            algorithm results cut off parameters
+        sort_by: str
+            algorithm result sorting parameter (inside one BLAST hit)
+        sort_horizontal:
+            algorithm result sorting parameter (horizontal sorting of subject
+            sequences based on total similarity value in .xlsx spreadsheet)
+        """
 
     def __init__(self, id_num=None, query_name=None, task="megablast",
                  sort_by="query_start", sort_horizontal=None, min_coverage=0,
                  min_identity=0, max_leng=999999999999999, min_leng=0):
+        """Initializes analysis parameters"""
         self.id_num = id_num
         self.query_name = query_name
         self.min_coverage = min_coverage
@@ -28,9 +44,11 @@ class blaster_tool():
         self.sort_horizontal = sort_horizontal
 
     def create_id_folder(self):
+        """Creates subfolders for BLAST+ output"""
         os.mkdir("{0}\\subfolder".format(self.id_num))
 
     def db_blast(self):
+        """Creates subject sequences local database and run BLAST+ blastn/megablast algorithm """
         for root, dirs, files in os.walk("{0}\\sequences".format(self.id_num)):
             for name in files:
                 if name.endswith('.fna') or name.endswith('.fasta') or name.endswith('.ffn'):

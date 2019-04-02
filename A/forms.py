@@ -7,28 +7,24 @@ from .models import add_post
 
 
 class sizeImageField(forms.ImageField):
-    MAX_UPLOAD_SIZE = 2097152
+    """ImageField with customized Validation"""
+    MAX_UPLOAD_SIZE = 2097152 # maximum image size in bytes
     def clean(self, data, initial=None):
+        """Validates image size"""
         if data is not None:
             if data.size > self.MAX_UPLOAD_SIZE:
                 raise forms.ValidationError(("It`s too BIG, max. size 2 Mb"), code="invalid")
         return super().clean(data, initial=None)
 
 class post_form(forms.ModelForm):
+    """Post (question) ModelForm"""
     class Meta:
         model = add_post
         fields = ["post_title", "post_text",  "post_image", ]
-        field_classes = { "post_image": sizeImageField, }
+        field_classes = { "post_image": sizeImageField, } # replaced form field class
         labels = {
             "post_title": "Title",
             "post_text": "Your question",
             "post_image": "Pictures",
-        }
-    # def clean_post_image(self, *args, **kwargs):
-    #     data = self.cleaned_data['post_image']
-    #     if data.size > MAX_UPLOAD_SIZE:
-    #         raise forms.ValidationError("It`s too BIG")
-    #
-    #     # Always return a value to use as the new cleaned data, even if
-    #     # this method didn't change it.
-    #     return data
+        } # custom labels
+    

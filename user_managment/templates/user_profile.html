@@ -33,7 +33,7 @@
                 {% else %}
                   <p class="card-text">Seems GUCCI</p>
                 {% endif %}
-                {% if user == object %}
+                {% if current_user == object %}
                   <a href="{% url "edit_current_user_profile" user_id=object.id %}" class="btn btn-primary">Edit</a>
                   <a href="{% url "password_change" %}" class="btn btn-primary">Change password</a>
                 {% endif %}
