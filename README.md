@@ -5,7 +5,7 @@ script for massive DNA sequence alignment (was part of my diploma work in biotec
 to compare many vs many sequences and outputting analysis results into .xlsx spreadsheet for better data visualization. Script allows
 user to choose cut-off and sortning results parameters in simple user interface in Django web app.
 ## Some features of Blaster web app:
-  * Ready to use: http://blaster-inf.tk/blaster/About/
+  * Ready to use: https://blaster-inf.tk/blaster/About/
   * Deployed to digitalocean droplet (Ubuntu 18.04) with PostgreSQL database
   * Common design with using Bootstrap 4
   * User registration with enfirmation via email (unique one-time use link)
