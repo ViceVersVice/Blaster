@@ -80,32 +80,14 @@ class Blaster(CreateView):
         id_num_corrected = str(self.object.id_num).replace("-", "") #replaces unnecessary "-" in uuid
         output_id = id_num_corrected # output file id
         id_path = "{0}\\{1}".format(settings.TEST_ROOT, id_num_corrected) # path to user input files folder
-
         query_name = self.request.FILES["query_input"] # user quey file name
-        sort_by = form.cleaned_data["sort_by"] # sorting parameter
-        sort_horizontal = form.cleaned_data["sort_horizontal"] # sorting parameter
-        # creates necessary initial parameters if they were not provided
-        if form.cleaned_data["min_leng"] != None:
-            min_leng = form.cleaned_data["min_leng"]
-        else:
-            min_leng=0
-        if form.cleaned_data["max_leng"] != None:
-            max_leng = form.cleaned_data["max_leng"]
-        else:
-            max_leng=9999999999999999999
-        if form.cleaned_data["min_coverage"] != None:
-            min_coverage = form.cleaned_data["min_coverage"]
-        else:
-            min_coverage=0
-        if form.cleaned_data["min_identity"] != None:
-            min_identity = form.cleaned_data["min_identity"]
-        else:
-            min_identity=0
+        keys = [key for key in form.cleaned_data.keys() if key != "query_input" and key != "sequences_input"]
+        parameters = {}
+        for key in keys:
+            if form.cleaned_data.get(key) != None:
+                parameters[key] = form.cleaned_data.get(key)
         # creates instance of blaster_tool class with user input data and path to sequence files
-        run_blaster = blaster_tool(id_num=id_path, query_name=query_name, task=self.object.task,
-                                   sort_by=sort_by, sort_horizontal=sort_horizontal,
-                                   min_leng=min_leng, max_leng=max_leng,
-                                   min_coverage=min_coverage, min_identity=min_identity)
+        run_blaster = blaster_tool(id_num=id_path, query_name=query_name, **parameters)
         run_blaster.create_id_folder() # creates subfolders
         run_blaster.unpack_sequences() # unpack archivised files
         run_blaster.db_blast() # creates local BLAST sequence database and makes main analysis
