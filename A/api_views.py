@@ -1,6 +1,6 @@
 from .serializers import AddPostSerializer #UserSerializer
 from .models import add_post
-from django.contrib.auth.models import User
+
 
 from rest_framework.generics import ListAPIView
 

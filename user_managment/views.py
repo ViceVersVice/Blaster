@@ -20,6 +20,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils import timezone
 from django.core import serializers
+from django.conf import settings
 from django.http import HttpResponseForbidden
 from django.core.mail import send_mail, EmailMessage, BadHeaderError
 from django.utils.encoding import force_bytes, force_text
@@ -107,9 +108,10 @@ class UserRegister(UserPassesTestMixin, CreateView):
         u_id = urlsafe_base64_encode(force_bytes(self.object.id)) # encodes unique uuid based on user id
         u_id_string = u_id.decode("utf-8") # decoded uuid value for url
         token_generator_class = AccountActivationTokenGenerator()
-        token = token_generator_class.make_token(self.object) # creates unique one time usable token
-        link = "{0}".format(reverse_lazy("activation", kwargs={"u_id": "{0}".format(u_id_string),
-                                                               "token": "{0}".format(token), }))
+        token = token_generator_class.make_token(self.object)
+        token_link_part = reverse_lazy("activation", kwargs={"u_id": "{0}".format(u_id_string), "token": "{0}".format(token), })
+        domain = settings.ALLOWED_HOSTS[0] # creates unique one time usable token
+        link = "https://{0}/{1}".format(domain, token_link_part)
         message = render_to_string("user_activation_message.html", {"user": self.object, "link": link}) # rendered message with activation link
         #activation_message = EmailMessage()
         try:
