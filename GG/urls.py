@@ -22,7 +22,10 @@ urlpatterns = [
     path('blaster/', include('user_managment.urls')),
     path('blaster/', include('A.urls')),
     path('blaster/', include('comment.urls')),
-    path("questions/api/", include("A.api_urls")),
-    path("blaster/api/", include("blaster.api_urls")),
     path('admin/', admin.site.urls),
+    #API urls
+    path("blaster-api/users/", include("user_managment.api_urls")),
+    path("blaster-api/questions/", include("A.api_urls")),
+    path("blaster-api/tool/", include("blaster.api_urls")),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

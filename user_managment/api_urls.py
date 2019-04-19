@@ -1,8 +1,11 @@
-from django.urls import path
+from django.urls import path, include
 from . import api_views
+from rest_framework import routers
 
+CRUDUser = routers.SimpleRouter()
+CRUDUser.register("", api_views.CRUDUserAPI)
 
 urlpatterns = [
-    path("user-auth/", api_views.UserAuthApiView.as_view(), name="user_auth_api"),
+    path("", include(CRUDUser.urls)),
 
 ]

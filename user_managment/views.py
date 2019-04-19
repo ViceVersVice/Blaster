@@ -111,7 +111,7 @@ class UserRegister(UserPassesTestMixin, CreateView):
         token = token_generator_class.make_token(self.object)
         token_link_part = reverse_lazy("activation", kwargs={"u_id": "{0}".format(u_id_string), "token": "{0}".format(token), })
         domain = settings.ALLOWED_HOSTS[0] # creates unique one time usable token
-        link = "https://{0}/{1}".format(domain, token_link_part)
+        link = "http://{0}:8000/{1}".format(domain, token_link_part)
         message = render_to_string("user_activation_message.html", {"user": self.object, "link": link}) # rendered message with activation link
         #activation_message = EmailMessage()
         try:
@@ -122,6 +122,7 @@ class UserRegister(UserPassesTestMixin, CreateView):
             [form.cleaned_data["email"]],
             fail_silently=False, html_message=message)
         except BadHeaderError:
+
             return HttpResponse('Invalid header found.')
 
         new_user_profile = user_profile(profile_related_user=self.object) # creates profile for User object
@@ -214,7 +215,7 @@ class Sign_in(UserPassesTestMixin, LoginView):
         user_id = self.request.user.id
         # update last_activity after login
         user_profile.objects.filter(profile_related_user=user_id).update(last_activity=timezone.now())
-        return HttpResponseRedirect(reverse("home1"))
+        return HttpResponseRedirect(reverse("homeT"))
 
     def handle_no_permission(self):
         return HttpResponseForbidden()

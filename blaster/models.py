@@ -48,7 +48,7 @@ class blaster(models.Model):
     sort_by_choices = [(SCORE, "Score"), (E_VALUE, "e_value"), (COVERAGE, "Coverage"),
     (IDENTITY, "Identity"), (QUERY_START, "Query_start"), (SUBJECT_START, "Subject_start"), ]
     sort_horizontal_choices = [(NO_SORTING, "Without sorting"), (SCORE, "Score"), (E_VALUE, "e_value"), (COVERAGE, "Coverage"), ]
-    sort_by = models.CharField(max_length=20, choices=sort_by_choices, default=SCORE)
+    sort_by = models.CharField(max_length=20, choices=sort_by_choices, default=SCORE, verbose_name="Sort hits by")
     sort_horizontal = models.CharField(max_length=20, choices=sort_horizontal_choices, default=NO_SORTING)
     task = models.CharField(max_length=10, choices=task_choices, default=MEGABLAST)
     id_num = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
