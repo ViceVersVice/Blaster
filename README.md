@@ -7,6 +7,7 @@ user to choose cut-off and sortning results parameters in simple user interface 
 ## Some features of Blaster web app:
   * Ready to use: https://blaster-inf.tk/blaster/About/
   * Deployed to digitalocean droplet (Ubuntu 18.04) with PostgreSQL database
+  * Added API which inherits all functionality available in front end
   * Common design with using Bootstrap 4
   * User registration with enfirmation via email (unique one-time use link)
   * Simple user profile with editing possibility
@@ -17,4 +18,19 @@ user to choose cut-off and sortning results parameters in simple user interface 
   * Customized pagination
   * Custom middleware
 ## Other packages used in this project:
-  * Widget tweaks, Biopython, Xlsxwriter, Pyunpack, Patool, Magic, Git.
+  * Widget tweaks, Biopython, Xlsxwriter, Pyunpack, Patool, Magic, Git, Django REST Framework.
+ 
+## API endpoints:
+>#### User management:
+  * https://blaster-inf.tk/blaster-api/users/crud/  -- (GET --> get list of users, POST --> create user (password double check), sends verification email, )
+  * https://blaster-inf.tk/blaster-api/users/crud/**user_id**/ -- (GET --> get user, PUT/PATCH/DELETE --> change user data (password double check, authentication needed)
+  * https://blaster-inf.tk/blaster-api/users/token-auth/ -- obtain authentication token, username and passwors is required
+>#### BLAST analysis:
+  * https://blaster-inf.tk/blaster-api/tool/io/  -- (POST method is allowed only, accepts sequences, analysis set of parameters)
+>#### Questions and answers:
+  * https://blaster-inf.tk/blaster-api/questions/  -- (GET --> questions list, POST(if authenticated) --> add question)
+  * https://blaster-inf.tk/blaster-api/questions/**id**/  -- (GET --> get question, PUT/PATCH/DELETE(if authenticated) --> change question, delete)
+  * https://blaster-inf.tk/blaster-api/questions/**id**/comments  -- (GET --> get question comments, POST(if authenticated) --> add comment)
+  * https://blaster-inf.tk/blaster-api/questions/**id**/comments/**comment_id**/  -- (GET --> get question comment, PUT/DELETE(if authenticated) --> change comment, delete)
+
+  
