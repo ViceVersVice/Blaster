@@ -146,7 +146,7 @@ class postView(ListView, BaseCreateView):
 
     def get_queryset(self):
         """Returns post related comments queryset"""
-        return self.get_object().comment_set.all()
+        return self.get_object().comments.all()
 
 class DeletePost(UserPassesTestMixin, DeleteView):
     """View for deleting posts (questions)

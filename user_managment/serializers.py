@@ -11,7 +11,18 @@ class RepresentationUserAPISerializer(serializers.ModelSerializer):
                         "id": {"read_only": True},
                         "email": {"required": True}
                         }
-        #read_only_fields = ("id_num",)
+
+    # def to_representation(self, instance):
+    #     ret = super().to_representation(instance)
+    #     current_username = self.context.get("request").user
+    #
+    #     for it in ret:
+    #         print(it)
+    #     print("USR:", current_username)
+    #     #print("RET:", ret)
+    #     return ret
+
+
 class CreateUserAPISerializerAndPasswordConfirm(RepresentationUserAPISerializer):
     """Adds non model field confirm_password for consequent passwords comparing.
     Username and email are unchangeable (for now) after being created (for PUT, PATCH).
@@ -23,6 +34,11 @@ class CreateUserAPISerializerAndPasswordConfirm(RepresentationUserAPISerializer)
         #extra_kwargs["username"] = {'read_only': True}
 
     def validate(self, data):
+        try:
+            User.objects.get(email=data.get("email"))
+            raise serializers.ValidationError("User with this email is already exists!")
+        except User.DoesNotExist:
+            pass
         if data.get("password", None) == None or data.get("confirm_password", None) == None: #only for PATCH
             raise serializers.ValidationError("Password required")
         if data["password"] != data["confirm_password"]:

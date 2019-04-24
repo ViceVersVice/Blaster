@@ -5,15 +5,17 @@ from rest_framework.permissions import IsAuthenticated, BasePermission, IsAuthen
 from django.contrib.auth.models import User
 from rest_framework.viewsets import ModelViewSet
 from .models import user_profile
+from .views import uniqueLinkActivation
+
 class AllowAnyPOST_GET(BasePermission):
     def has_permission(self, request, view):
         return True
     def has_object_permission(self, request, view, obj):
-        return True
-        # if request.user.is_staff or request.method == "GET":
-        #     return True
-        # else:
-        #     return request.user.id == obj.id
+        #return True
+        if request.user.is_staff or request.method == "GET":
+            return True
+        else:
+            return request.user.id == obj.id
 
 
 class CRUDUserAPI(ModelViewSet):
@@ -22,7 +24,7 @@ class CRUDUserAPI(ModelViewSet):
     """
     serializer_class = RepresentationUserAPISerializer
     queryset = User.objects.all()
-    permission_classes = (AllowAnyPOST_GET,)
+    permission_classes = (IsAuthenticated, AllowAnyPOST_GET,)
 
     def get_serializer_class(self):
         specified_actions = ["list", "retrieve",]
@@ -32,9 +34,7 @@ class CRUDUserAPI(ModelViewSet):
             return CreateUserAPISerializerAndPasswordConfirm
 
     def perform_create(self, serializer):
-        print(serializer.instance)
-        serializer.save()
+        serializer.save(is_active=False)
+        uniqueLinkActivation(serializer.instance) # sends activation email
+        print("USER", serializer.instance)
         user_profile.objects.create(profile_related_user=serializer.instance) # creates user profile
-
-    # @action(detail=False, methods=['post'])
-    # def LoginAUTH(self, request):
