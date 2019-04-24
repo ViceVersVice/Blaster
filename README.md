@@ -17,9 +17,7 @@ user to choose cut-off and sortning results parameters in simple user interface 
   * User permissions (editing, deleting, seeing) validation
   * Customized pagination
   * Custom middleware
-## Other packages used in this project:
-  * Widget tweaks, Biopython, Xlsxwriter, Pyunpack, Patool, Magic, Git, Django REST Framework.
- 
+
 ## API endpoints:
 >#### User management:
   * https://blaster-inf.tk/blaster-api/users/crud/  -- (GET --> get list of users, POST --> create user (password double check), sends verification email, )
@@ -32,5 +30,7 @@ user to choose cut-off and sortning results parameters in simple user interface 
   * https://blaster-inf.tk/blaster-api/questions/**id**/  -- (GET --> get question, PUT/PATCH/DELETE(if authenticated) --> change question, delete)
   * https://blaster-inf.tk/blaster-api/questions/**id**/comments  -- (GET --> get question comments, POST(if authenticated) --> add comment)
   * https://blaster-inf.tk/blaster-api/questions/**id**/comments/**comment_id**/  -- (GET --> get question comment, PUT/DELETE(if authenticated) --> change comment, delete)
-
+## Other packages used in this project:
+  * Widget tweaks, Biopython, Xlsxwriter, Pyunpack, Patool, Magic, Git, Django REST Framework.
+ 
   
