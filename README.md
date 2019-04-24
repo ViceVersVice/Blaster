@@ -1,7 +1,7 @@
 # Blaster
 Web application for improved BLAST local DNA sequence alignment.
-This is my first web application created with using python3 and Django framework. It combines in it blog/forum and integrated 
-script for massive DNA sequence alignment (was part of my diploma work in biotech:) with using NCBI BLAST+ algorithms. It allows
+This is my first web application created with using python3 and Django framework. It combines simple blog/forum and integrated 
+script for massive DNA sequence alignment (was part of my diploma work in biotech:) with using NCBI BLAST+ algorithms in it. It allows
 to compare many vs many sequences and outputting analysis results into .xlsx spreadsheet for better data visualization. Script allows
 user to choose cut-off and sortning results parameters in simple user interface in Django web app.
 ## Some features of Blaster web app:
