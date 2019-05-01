@@ -1,6 +1,8 @@
 {% extends "header.html" %}
 {% load widget_tweaks %}
 {% load static %}
+{% load socialaccount %}
+
 {% block body %}
   <body class="body" style="background-image:url({% static "images/abs.webp" %}); background-size: cover; background-repeat: no-repeat; position: relative;">
     {% include "navbar.html" %}
@@ -46,6 +48,16 @@
               {% endfor %}
               <button class="btn btn-success" onclick="this.disabled=true,this.form.submit()">Apply</button>
             </form>
+            {% get_social_accounts object.profile_related_user as accounts %}
+            {% if accounts %}
+              <p class="card-text mt-3"><b>Connected social accounts:</b> <br>
+                Disconnect:
+              {% for account in accounts %}
+                <a href="{% url "delete_social" user_id=object.profile_related_user.id provider=account %}"><span class="badge badge-pill badge-danger">{{account}}</span></a>
+              {% endfor %}</p>
+            {% else %}
+              <p class="card-text mt-3">No connected social accounts</p>
+            {% endif %}
           </div>
         </div>
       </div>

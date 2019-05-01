@@ -18,6 +18,9 @@ from django.http import HttpResponseForbidden
 
 ######################################################
 #About page and How # TO:
+def PrivacyPolicyView(request):
+    return render(request, "privacy_policy.html")
+
 def AboutView(request):
     """Simple about page view"""
     return render(request, "about.html")

@@ -17,15 +17,21 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from A.views import AboutView
+
 urlpatterns = [
+    path("", AboutView, name="about_main"),
     path('blaster/', include('blaster.urls')),
     path('blaster/', include('user_managment.urls')),
     path('blaster/', include('A.urls')),
     path('blaster/', include('comment.urls')),
     path('admin/', admin.site.urls),
+    # Social Authentication
+    path('accounts/', include('allauth.urls')),
     #API urls
     path("blaster-api/users/", include("user_managment.api_urls")),
     path("blaster-api/questions/", include("A.api_urls")),
     path("blaster-api/tool/", include("blaster.api_urls")),
-
+    #allauth
+    path('accounts/', include('allauth.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
