@@ -15,16 +15,17 @@ class LastActivity():
         """Logout of inactive users"""
         response = self.get_response(request)
         session_age = timedelta(seconds=86400) #24 hours
-        user_id = request.user.id
-        if request.user.is_authenticated and request.user.is_staff == False: # not in case of superuser
-            last_activity = user_profile.objects.get(profile_related_user=user_id).last_activity
-            #print(1)
+        if request.user.is_authenticated and request.user.is_staff == False:
+            user_id = request.user.id
+            try:
+                last_activity = user_profile.objects.get(profile_related_user=user_id).last_activity
+            except:
+                new_user = User.objects.get(id=user_id)
+                new_profile = user_profile.objects.create(profile_related_user=new_user, last_activity=timezone.now())
+                last_activity = new_profile.last_activity
             if timezone.now() - last_activity > session_age:
-                print("LOGGED_OUT")
+                print("LOGGED_OUT", last_activity)
                 logout(request)
             else:
-                #print(2)
-                user_profile.objects.filter(profile_related_user=user_id).update(last_activity=timezone.now()) # updates last activity
-
-        #print(request.user)
+                user_profile.objects.filter(profile_related_user=user_id).update(last_activity=timezone.now())
         return response

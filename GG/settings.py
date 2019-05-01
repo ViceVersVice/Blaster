@@ -29,13 +29,22 @@ SECRET_KEY = s_key
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", ]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "192.168.1.3"]
 #ALLOWED_HOSTS = ["192.168.1.3", "localhost",]
 
+SITE_ID = 1
 
 # Application definition
 
 INSTALLED_APPS = [
+    # allauth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
+    # -----------
+    'django.contrib.sites',
     'rest_framework.authtoken',
     'rest_framework',
     'blaster.apps.BlasterConfig',
@@ -51,6 +60,32 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+#allauth
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    },
+    'facebook': {
+        'METHOD': 'oauth2',
+        'SCOPE': ['public_profile', 'email',],
+        'FIELDS': ["first_name", "email",],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+ACCOUNT_ADAPTER = 'user_managment.adapter.CustomAdapter'
+SOCIALACCOUNT_ADAPTER = 'user_managment.adapter.CustomSocialAdapter'
+SOCIALACCOUNT_AUTO_SIGNUP = True
+ACCOUNT_EMAIL_REQUIRED = True
+#_____________________________
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -60,6 +95,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'user_managment.middleware.LastActivity',
+
 
 ]
 
@@ -90,6 +126,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
             ],
         },
     },
@@ -133,7 +170,11 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-#email smtp
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'

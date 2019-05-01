@@ -6,7 +6,12 @@ from .models import user_profile
 from A.forms import sizeImageField
 import datetime
 
-
+class SetPasswordForm(UserCreationForm):
+    """Users who registrated via socialaccounts have to set password"""
+    class Meta:
+        model = User
+        fields = ("password1", "password2",)
+        
 class DatePick(forms.DateInput):
     """Changes standart input type of DateInput form field"""
     input_type = "date"

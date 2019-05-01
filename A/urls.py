@@ -12,5 +12,6 @@ urlpatterns = [
     path("post/id=<int:post_id>/", views.postView.as_view(), name="post1"),
     path("questions_answers/", views.homeTestView.as_view(), name="homeT"),
     path("About/", views.AboutView, name="about"),
+    path("privacy-policy/", views.PrivacyPolicyView, name="privacy_policy"),
 
 ]

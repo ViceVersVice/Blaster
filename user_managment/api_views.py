@@ -11,9 +11,10 @@ class AllowAnyPOST_GET(BasePermission):
     def has_permission(self, request, view):
         return True
     def has_object_permission(self, request, view, obj):
-        #return True
         if request.user.is_staff or request.method == "GET":
             return True
+        if bool(request.user and request.user.is_authenticated) == False:
+            return False  
         else:
             return request.user.id == obj.id
 
@@ -24,7 +25,7 @@ class CRUDUserAPI(ModelViewSet):
     """
     serializer_class = RepresentationUserAPISerializer
     queryset = User.objects.all()
-    permission_classes = (IsAuthenticated, AllowAnyPOST_GET,)
+    permission_classes = (AllowAnyPOST_GET,)
 
     def get_serializer_class(self):
         specified_actions = ["list", "retrieve",]
