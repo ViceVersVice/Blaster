@@ -9,7 +9,7 @@ user to choose cut-off and sortning results parameters in simple user interface 
   * Deployed to digitalocean droplet (Ubuntu 18.04) with PostgreSQL database
   * Added API which inherits all functionality available in front end
   * Common design with using Bootstrap 4
-  * User registration with enfirmation via email (unique one-time use link)
+  * User registration with confirmation via email (unique one-time use link)
   * User registration with facebook and google (connect/disconnect)
   * Simple user profile with editing possibility
   * Questions/answers section with possibility to comment, edit, delete
