@@ -20,6 +20,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils import timezone
 from django.core import serializers
+from django.conf import settings
 from django.http import HttpResponseForbidden
 from django.core.mail import send_mail, EmailMessage, BadHeaderError
 from django.utils.encoding import force_bytes, force_text
@@ -81,6 +82,26 @@ class UserProfile(DetailView):
         return context
 
 
+def uniqueLinkActivation(object):
+    """Sends message which contain generated link with unique token"""
+    u_id = urlsafe_base64_encode(force_bytes(object.id)) # encodes unique uuid based on user id
+    u_id_string = u_id.decode("utf-8") # decoded uuid value for url
+    token_generator_class = AccountActivationTokenGenerator()
+    token = token_generator_class.make_token(object)
+    token_link_part = reverse_lazy("activation", kwargs={"u_id": "{0}".format(u_id_string), "token": "{0}".format(token), })
+    domain = settings.ALLOWED_HOSTS[0] # creates unique one time usable token
+    link = "http://{0}:8000{1}".format(domain, token_link_part)
+    message = render_to_string("user_activation_message.html", {"user": object.username, "link": link}) # rendered message with activation link
+    #activation_message = EmailMessage()
+    try:
+        # Sends activation message
+        send_mail("Blaster acc activation",
+        "Welcome to future!",
+        'blaster.inf.tool@gmail.com',
+        [object.email],
+        fail_silently=False, html_message=message)
+    except BadHeaderError:
+        return HttpResponse('Invalid header found.')
 
 class UserRegister(UserPassesTestMixin, CreateView):
     """View for user Registration. Handles activation mail sending.
@@ -104,27 +125,11 @@ class UserRegister(UserPassesTestMixin, CreateView):
         self.object = form.save(commit=False)
         self.object.is_active = False # new user is in inactive state
         self.object.save() # save User object
-        u_id = urlsafe_base64_encode(force_bytes(self.object.id)) # encodes unique uuid based on user id
-        u_id_string = u_id.decode("utf-8") # decoded uuid value for url
-        token_generator_class = AccountActivationTokenGenerator()
-        token = token_generator_class.make_token(self.object) # creates unique one time usable token
-        link = "{0}".format(reverse_lazy("activation", kwargs={"u_id": "{0}".format(u_id_string),
-                                                               "token": "{0}".format(token), }))
-        message = render_to_string("user_activation_message.html", {"user": self.object, "link": link}) # rendered message with activation link
-        #activation_message = EmailMessage()
-        try:
-            # Sends activation message
-            send_mail("Blaster acc activation",
-            "Welcome to future!",
-            'blaster.inf.tool@gmail.com',
-            [form.cleaned_data["email"]],
-            fail_silently=False, html_message=message)
-        except BadHeaderError:
-            return HttpResponse('Invalid header found.')
-
+        uniqueLinkActivation(self.object) # sneds message with link
         new_user_profile = user_profile(profile_related_user=self.object) # creates profile for User object
         new_user_profile.save()
         return super().form_valid(form)
+
     def handle_no_permission(self):
         return HttpResponseForbidden()
 
@@ -212,7 +217,7 @@ class Sign_in(UserPassesTestMixin, LoginView):
         user_id = self.request.user.id
         # update last_activity after login
         user_profile.objects.filter(profile_related_user=user_id).update(last_activity=timezone.now())
-        return HttpResponseRedirect(reverse("home1"))
+        return HttpResponseRedirect(reverse("homeT"))
 
     def handle_no_permission(self):
         return HttpResponseForbidden()

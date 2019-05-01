@@ -13,7 +13,4 @@ urlpatterns = [
     path("questions_answers/", views.homeTestView.as_view(), name="homeT"),
     path("About/", views.AboutView, name="about"),
 
-    #path("homeT/%3Fpage=<int:num>", views.homeTestView.as_view(), name="actual_page"),
-    #path("homeT/?page=<int:num>/post=<int:id>/", views.PostDetailTestView.as_view(), name="post_comments"),
-    #path("comment/", views.comment, name="com"),
 ]
