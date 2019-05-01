@@ -10,6 +10,7 @@ user to choose cut-off and sortning results parameters in simple user interface 
   * Added API which inherits all functionality available in front end
   * Common design with using Bootstrap 4
   * User registration with enfirmation via email (unique one-time use link)
+  * User registration with facebook and google (connect/disconnect)
   * Simple user profile with editing possibility
   * Questions/answers section with possibility to comment, edit, delete
   * Custom form validation, user image/file input validation (size, extension, mime type)
@@ -31,6 +32,6 @@ user to choose cut-off and sortning results parameters in simple user interface 
   * https://blaster-inf.tk/blaster-api/questions/**id**/comments  -- (GET --> get question comments, POST(if authenticated) --> add comment)
   * https://blaster-inf.tk/blaster-api/questions/**id**/comments/**comment_id**/  -- (GET --> get question comment, PUT/DELETE(if authenticated) --> change comment, delete)
 ## Other packages used in this project:
-  * Widget tweaks, Biopython, Xlsxwriter, Pyunpack, Patool, Magic, Git, Django REST Framework.
+  * Widget tweaks, Biopython, Xlsxwriter, Pyunpack, Patool, Magic, Git, Django REST Framework, allauth.
  
   
