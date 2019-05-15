@@ -32,6 +32,6 @@ user to choose cut-off and sortning results parameters in simple user interface 
   * https://blaster-inf.tk/blaster-api/questions/**id**/comments  -- (GET --> get question comments, POST(if authenticated) --> add comment)
   * https://blaster-inf.tk/blaster-api/questions/**id**/comments/**comment_id**/  -- (GET --> get question comment, PUT/DELETE(if authenticated) --> change comment, delete)
 ## Packages used in this project:
-  * Widget tweaks, Biopython, Xlsxwriter, Pyunpack, Patool, Magic, Django REST Framework, allauth.
+  * Widget tweaks, Biopython, Xlsxwriter, Pyunpack, Patool, Magic, Django REST Framework, Django allauth.
  
   
