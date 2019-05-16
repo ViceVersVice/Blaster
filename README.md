@@ -1,4 +1,4 @@
-# Blaster
+# Blaster (My first web app)
 Web application for improved BLAST local DNA sequence alignment.
 This is my first web application created with using python3 and Django framework. It combines simple blog/forum and integrated 
 script for massive DNA sequence alignment (was part of my diploma work in biotech:) with using NCBI BLAST+ algorithms in it. It allows
